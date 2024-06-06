@@ -1,6 +1,6 @@
 import json
 
-from Backend.book.AltaBook.ConnectionDB import get_connection
+from Backend.book.EditBook.ConnectionDB import get_connection
 
 
 def lambda_handler(event):
