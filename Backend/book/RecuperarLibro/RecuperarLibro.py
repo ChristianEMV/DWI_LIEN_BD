@@ -16,19 +16,12 @@ def lambda_handler(event):
             select_query = "SELECT * FROM books WHERE idbook = %s"
             cursor.execute(select_query, (idbook,))
             result = cursor.fetchone()
-
+            print(result)
         if result:
-            book = {
-                'idbook': result[0],
-                'titulo': result[1],
-                'fecha_publicacion': result[2].isoformat() if isinstance(result[2], date) else result[2],
-                'autor': result[3],
-                'editorial': result[4],
-                'status': result[5],
-            }
+
             return {
                 'statusCode': 200,
-                'body': json.dumps(book)
+                'body': json.dumps(result)
             }
         else:
             return {

@@ -3,29 +3,34 @@ from Backend.prestamos.Altaprestamo.ConnectionDB import get_connection
 
 
 def lambda_handler(event):
-    print(event)
     request_body = json.loads(event['body'])
-    fechainicio = request_body['fecha_inicio']
-    fechafin = request_body['fecha_fin']
-    idusuario = request_body['idUsuario']
-    idlibro = request_body['idLibro']
+    fecha_inicio = request_body['fecha_inicio']
+    fecha_fin = request_body['fecha_fin']
+    iduser = request_body['iduser']
+    idbook = request_body['idbook']
 
     connection = get_connection()
 
     try:
         with connection.cursor() as cursor:
-            select_query = "SELECT statusLibro from books where idbook like (%s)"
-            cursor.execute(select_query, (idlibro))
-        result = cursor.fetchone()
-        if result == 0:
-            with connection.cursor() as cursor:
-                insert_query = "INSERT INTO prestamo (fechaInicio, fechaFinal, Usuarios_idUsuarios, Libros_idLibros)VALUES (%s,%s,%s,%s,%s))"
-                cursor.execute(insert_query, (fechainicio, fechafin, idusuario, idlibro))
-        connection.commit()
-        return {
-            'statusCode': 200,
-            'body': json.dumps('prestamo exitoso')
-        }
+            select_query = "SELECT status FROM books WHERE idbook = %s"
+            cursor.execute(select_query, (idbook,))
+            result = cursor.fetchone()
+
+            if result and result[0] == "0":
+
+                insert_query = "INSERT INTO prestamos (fecha_inicio, fecha_fin, iduser, idbook) VALUES (%s, %s, %s, %s)"
+                cursor.execute(insert_query, (fecha_inicio, fecha_fin, iduser, idbook))
+                connection.commit()
+                return {
+                    'statusCode': 200,
+                    'body': json.dumps('Préstamo exitoso')
+                }
+            else:
+                return {
+                    'statusCode': 400,
+                    'body': json.dumps('El libro no está disponible para préstamo')
+                }
     except Exception as e:
         connection.rollback()
         return {
