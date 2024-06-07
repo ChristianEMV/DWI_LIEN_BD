@@ -12,6 +12,46 @@ Globals:
     MemorySize: 128
 
 Resources:
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaBasicExecution
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
+  BookApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: BookApi
+      StageName: Prod
+
+  UserApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: UserApi
+      StageName: Prod
+
+  LoansApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: LoansApi
+      StageName: Prod
+
   HelloWorldFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -33,12 +73,14 @@ Resources:
       CodeUri: book/AltaBook/
       Handler: AltaBook.lambda_handler
       Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
       Events:
         AltaBookEvent:
           Type: Api
           Properties:
+            RestApiId: !Ref BookApi
             Path: /add
             Method: post
 
@@ -48,12 +90,14 @@ Resources:
       CodeUri: book/EditBook/
       Handler: EditBook.lambda_handler
       Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
       Events:
         EditBookEvent:
           Type: Api
           Properties:
+            RestApiId: !Ref BookApi
             Path: /edi
             Method: put
 
@@ -63,12 +107,14 @@ Resources:
       CodeUri: book/RecupearLibros/
       Handler: RecupearLibros.lambda_handler
       Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
       Events:
         RecuperarLibrosEvent:
           Type: Api
           Properties:
+            RestApiId: !Ref BookApi
             Path: /all
             Method: get
 
@@ -78,12 +124,14 @@ Resources:
       CodeUri: book/RecuperarLibro/
       Handler: RecuperarLibro.lambda_handler
       Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
       Events:
         RecuperarLibroEvent:
           Type: Api
           Properties:
+            RestApiId: !Ref BookApi
             Path: /search
             Method: get
 
@@ -93,14 +141,50 @@ Resources:
       CodeUri: book/EliminarLibro/
       Handler: EliminarLibro.lambda_handler
       Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
       Events:
         EliminarLibroEvent:
           Type: Api
           Properties:
+            RestApiId: !Ref BookApi
             Path: /delete
             Method: delete
+
+  CrearUsuarioFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: User/CrearUsuario/
+      Handler: CrearUsuario.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        CrearUsuarioEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref UserApi
+            Path: /add
+            Method: post
+
+  AltaPrestamoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: prestamos/Altaprestamo/
+      Handler: AltaPrestamo.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        AltaPrestamoEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LoansApi
+            Path: /add
+            Method: post
 
 
 Outputs:
