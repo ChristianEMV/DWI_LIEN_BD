@@ -27,6 +27,82 @@ Resources:
             Path: /hello
             Method: get
 
+  AltaBookFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: book/AltaBook/
+      Handler: AltaBook.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        AltaBookEvent:
+          Type: Api
+          Properties:
+            Path: /add
+            Method: post
+
+  EditBookFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: book/EditBook/
+      Handler: EditBook.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        EditBookEvent:
+          Type: Api
+          Properties:
+            Path: /edi
+            Method: put
+
+  RecuperarLibrosFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: book/RecupearLibros/
+      Handler: RecupearLibros.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        RecuperarLibrosEvent:
+          Type: Api
+          Properties:
+            Path: /all
+            Method: get
+
+  RecuperarLibroFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: book/RecuperarLibro/
+      Handler: RecuperarLibro.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        RecuperarLibroEvent:
+          Type: Api
+          Properties:
+            Path: /search
+            Method: get
+
+  EliminarLibroFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: book/EliminarLibro/
+      Handler: EliminarLibro.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        EliminarLibroEvent:
+          Type: Api
+          Properties:
+            Path: /delete
+            Method: delete
+
+
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
