@@ -38,19 +38,19 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       Name: BookApi
-      StageName: Dev
+      StageName: Prod
 
   UserApi:
     Type: AWS::Serverless::Api
     Properties:
       Name: UserApi
-      StageName: Dev
+      StageName: Prod
 
   LoansApi:
     Type: AWS::Serverless::Api
     Properties:
       Name: LoansApi
-      StageName: Dev
+      StageName: Prod
 
   HelloWorldFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -73,6 +73,7 @@ Resources:
       CodeUri: book/AltaBook/
       Handler: AltaBook.lambda_handler
       Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
       Events:
@@ -89,6 +90,7 @@ Resources:
       CodeUri: book/EditBook/
       Handler: EditBook.lambda_handler
       Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
       Events:
@@ -105,6 +107,7 @@ Resources:
       CodeUri: book/RecupearLibros/
       Handler: RecupearLibros.lambda_handler
       Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
       Events:
@@ -121,6 +124,7 @@ Resources:
       CodeUri: book/RecuperarLibro/
       Handler: RecuperarLibro.lambda_handler
       Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
       Events:
@@ -137,6 +141,7 @@ Resources:
       CodeUri: book/EliminarLibro/
       Handler: EliminarLibro.lambda_handler
       Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
       Events:
@@ -153,10 +158,11 @@ Resources:
       CodeUri: User/CrearUsuario/
       Handler: CrearUsuario.lambda_handler
       Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
       Events:
-        EliminarLibroEvent:
+        CrearUsuarioEvent:
           Type: Api
           Properties:
             RestApiId: !Ref UserApi
@@ -169,10 +175,11 @@ Resources:
       CodeUri: prestamos/Altaprestamo/
       Handler: AltaPrestamo.lambda_handler
       Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
       Events:
-        EliminarLibroEvent:
+        AltaPrestamoEvent:
           Type: Api
           Properties:
             RestApiId: !Ref LoansApi

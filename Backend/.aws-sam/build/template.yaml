@@ -10,6 +10,42 @@ Globals:
     Timeout: 3
     MemorySize: 128
 Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      Policies:
+      - PolicyName: LambdaBasicExecution
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
+  BookApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: BookApi
+      StageName: Dev
+  UserApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: UserApi
+      StageName: Dev
+  LoansApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: LoansApi
+      StageName: Dev
   HelloWorldFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -26,6 +62,132 @@ Resources:
             Method: get
     Metadata:
       SamResourceId: HelloWorldFunction
+  AltaBookFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: AltaBookFunction
+      Handler: AltaBook.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        AltaBookEvent:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: BookApi
+            Path: /add
+            Method: post
+    Metadata:
+      SamResourceId: AltaBookFunction
+  EditBookFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: EditBookFunction
+      Handler: EditBook.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        EditBookEvent:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: BookApi
+            Path: /edi
+            Method: put
+    Metadata:
+      SamResourceId: EditBookFunction
+  RecuperarLibrosFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: RecuperarLibrosFunction
+      Handler: RecupearLibros.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        RecuperarLibrosEvent:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: BookApi
+            Path: /all
+            Method: get
+    Metadata:
+      SamResourceId: RecuperarLibrosFunction
+  RecuperarLibroFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: RecuperarLibroFunction
+      Handler: RecuperarLibro.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        RecuperarLibroEvent:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: BookApi
+            Path: /search
+            Method: get
+    Metadata:
+      SamResourceId: RecuperarLibroFunction
+  EliminarLibroFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: EliminarLibroFunction
+      Handler: EliminarLibro.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        EliminarLibroEvent:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: BookApi
+            Path: /delete
+            Method: delete
+    Metadata:
+      SamResourceId: EliminarLibroFunction
+  CrearUsuarioFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: CrearUsuarioFunction
+      Handler: CrearUsuario.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        CrearUsuarioEvent:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: UserApi
+            Path: /add
+            Method: post
+    Metadata:
+      SamResourceId: CrearUsuarioFunction
+  AltaPrestamoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: AltaPrestamoFunction
+      Handler: AltaPrestamo.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        AltaPrestamoEvent:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: LoansApi
+            Path: /add
+            Method: post
+    Metadata:
+      SamResourceId: AltaPrestamoFunction
 Outputs:
   HelloWorldApi:
     Description: API Gateway endpoint URL for Prod stage for Hello World function
