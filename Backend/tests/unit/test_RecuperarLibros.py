@@ -1,6 +1,6 @@
 
 
-from Backend.book.RecupearLibros.RecupearLibros import lambda_handler
+from Backend.book.RecupearLibros.app import lambda_handler
 
 
 def test_lamnda_AllBooks():

@@ -1,6 +1,6 @@
 import json
 
-from Backend.book.EditBook.EditBook import lambda_handler
+from Backend.book.EditBook.app import lambda_handler
 
 
 def test_lambda_post():

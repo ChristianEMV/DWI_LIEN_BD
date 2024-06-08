@@ -35,17 +35,12 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       Name: BookApi
-      StageName: Dev
+      StageName: Prod
   UserApi:
     Type: AWS::Serverless::Api
     Properties:
       Name: UserApi
-      StageName: Dev
-  LoansApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      Name: LoansApi
-      StageName: Dev
+      StageName: Prod
   HelloWorldFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -66,8 +61,12 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: AltaBookFunction
-      Handler: AltaBook.lambda_handler
+      Handler: app.lambda_handler
       Runtime: python3.9
+      Role:
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
       Architectures:
       - x86_64
       Events:
@@ -84,8 +83,12 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: EditBookFunction
-      Handler: EditBook.lambda_handler
+      Handler: app.lambda_handler
       Runtime: python3.9
+      Role:
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
       Architectures:
       - x86_64
       Events:
@@ -98,12 +101,16 @@ Resources:
             Method: put
     Metadata:
       SamResourceId: EditBookFunction
-  RecuperarLibrosFunction:
+  RecupearLibrosFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: RecuperarLibrosFunction
-      Handler: RecupearLibros.lambda_handler
+      CodeUri: RecupearLibrosFunction
+      Handler: app.lambda_handler
       Runtime: python3.9
+      Role:
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
       Architectures:
       - x86_64
       Events:
@@ -115,13 +122,17 @@ Resources:
             Path: /all
             Method: get
     Metadata:
-      SamResourceId: RecuperarLibrosFunction
+      SamResourceId: RecupearLibrosFunction
   RecuperarLibroFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: RecuperarLibroFunction
-      Handler: RecuperarLibro.lambda_handler
+      Handler: app.lambda_handler
       Runtime: python3.9
+      Role:
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
       Architectures:
       - x86_64
       Events:
@@ -130,16 +141,20 @@ Resources:
           Properties:
             RestApiId:
               Ref: BookApi
-            Path: /search
-            Method: get
+            Path: /search/{idbook}
+            Method: post
     Metadata:
       SamResourceId: RecuperarLibroFunction
   EliminarLibroFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: EliminarLibroFunction
-      Handler: EliminarLibro.lambda_handler
+      Handler: app.lambda_handler
       Runtime: python3.9
+      Role:
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
       Architectures:
       - x86_64
       Events:
@@ -156,8 +171,12 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: CrearUsuarioFunction
-      Handler: CrearUsuario.lambda_handler
+      Handler: app.lambda_handler
       Runtime: python3.9
+      Role:
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
       Architectures:
       - x86_64
       Events:
@@ -174,7 +193,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: AltaPrestamoFunction
-      Handler: AltaPrestamo.lambda_handler
+      Handler: app.lambda_handler
       Runtime: python3.9
       Architectures:
       - x86_64
@@ -182,9 +201,7 @@ Resources:
         AltaPrestamoEvent:
           Type: Api
           Properties:
-            RestApiId:
-              Ref: LoansApi
-            Path: /add
+            Path: /create_prestamo
             Method: post
     Metadata:
       SamResourceId: AltaPrestamoFunction
@@ -205,3 +222,23 @@ Outputs:
       Fn::GetAtt:
       - HelloWorldFunctionRole
       - Arn
+  AltaPrestamoFunctionArn:
+    Description: "ARN de la funci\xF3n Lambda para el alta de pr\xE9stamo"
+    Value:
+      Fn::GetAtt:
+      - AltaPrestamoFunction
+      - Arn
+  AltaPrestamoApiUrl:
+    Description: "URL de la API Gateway para el evento de alta de pr\xE9stamo"
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/create_user
+  CrearUsuarioFunctionArn:
+    Description: "ARN de la funci\xF3n Lambda para crear usuarios"
+    Value:
+      Fn::GetAtt:
+      - CrearUsuarioFunction
+      - Arn
+  CrearUsuarioApiUrl:
+    Description: "URL de la API Gateway para el evento de creaci\xF3n de usuario"
+    Value:
+      Fn::Sub: https://${UserApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/add

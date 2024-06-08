@@ -1,6 +1,6 @@
 import json
 
-from Backend.book.RecuperarLibro.RecuperarLibro import lambda_handler
+from Backend.book.RecuperarLibro.app import lambda_handler
 
 
 def test_lamnda_FindById():

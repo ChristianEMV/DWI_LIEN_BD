@@ -1,6 +1,6 @@
 import json
 
-from Backend.book.EliminarLibro.EliminarLibro import lambda_handler
+from Backend.book.EliminarLibro.app import lambda_handler
 
 
 def test_lamnda_DeleteBook():

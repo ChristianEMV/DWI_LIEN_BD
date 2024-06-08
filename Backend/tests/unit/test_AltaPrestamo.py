@@ -1,6 +1,6 @@
 import json
 
-from Backend.prestamos.Altaprestamo.AltaPrestamo import lambda_handler
+from Backend.Altaprestamo import app
 
 def test_lambda_post():
     mock = {
@@ -12,6 +12,6 @@ def test_lambda_post():
         })
     }
 
-    regreso = lambda_handler(mock)
+    regreso = app.lambda_handler(mock)
     print(regreso)
 

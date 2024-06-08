@@ -1,6 +1,7 @@
 import json
 
-from Backend.User.CrearUsuario.CrearUsuario import lambda_handler
+from Backend.CrearUsuario import app
+
 
 def test_lamnda_DeleteBook():
     mock = {
@@ -14,5 +15,5 @@ def test_lamnda_DeleteBook():
         })
     }
 
-    regreso = lambda_handler(mock)
+    regreso = app.lambda_handler(mock)
     print(regreso)

@@ -1,6 +1,6 @@
 import json
 
-from Backend.book.AltaBook.AltaBook import lambda_handler
+from Backend.book.AltaBook.app import lambda_handler
 
 
 def test_lambda_post():

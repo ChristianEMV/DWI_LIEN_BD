@@ -46,12 +46,6 @@ Resources:
       Name: UserApi
       StageName: Prod
 
-  LoansApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      Name: LoansApi
-      StageName: Prod
-
   HelloWorldFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -71,7 +65,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: book/AltaBook/
-      Handler: AltaBook.lambda_handler
+      Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
@@ -88,7 +82,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: book/EditBook/
-      Handler: EditBook.lambda_handler
+      Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
@@ -101,11 +95,11 @@ Resources:
             Path: /edi
             Method: put
 
-  RecuperarLibrosFunction:
+  RecupearLibrosFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: book/RecupearLibros/
-      Handler: RecupearLibros.lambda_handler
+      Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
@@ -122,7 +116,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: book/RecuperarLibro/
-      Handler: RecuperarLibro.lambda_handler
+      Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
@@ -132,14 +126,14 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref BookApi
-            Path: /search
-            Method: get
+            Path: /search/{idbook}
+            Method: post
 
   EliminarLibroFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: book/EliminarLibro/
-      Handler: EliminarLibro.lambda_handler
+      Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
@@ -155,8 +149,8 @@ Resources:
   CrearUsuarioFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: User/CrearUsuario/
-      Handler: CrearUsuario.lambda_handler
+      CodeUri: CrearUsuario/
+      Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
@@ -172,18 +166,16 @@ Resources:
   AltaPrestamoFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: prestamos/Altaprestamo/
-      Handler: AltaPrestamo.lambda_handler
+      CodeUri: Altaprestamo/
+      Handler: app.lambda_handler
       Runtime: python3.9
-      Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
       Events:
         AltaPrestamoEvent:
           Type: Api
           Properties:
-            RestApiId: !Ref LoansApi
-            Path: /add
+            Path: /create_prestamo
             Method: post
 
 
@@ -200,3 +192,15 @@ Outputs:
   HelloWorldFunctionIamRole:
     Description: "Implicit IAM Role created for Hello World function"
     Value: !GetAtt HelloWorldFunctionRole.Arn
+  AltaPrestamoFunctionArn:
+    Description: "ARN de la función Lambda para el alta de préstamo"
+    Value: !GetAtt AltaPrestamoFunction.Arn
+  AltaPrestamoApiUrl:
+    Description: "URL de la API Gateway para el evento de alta de préstamo"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/create_user"
+  CrearUsuarioFunctionArn:
+    Description: "ARN de la función Lambda para crear usuarios"
+    Value: !GetAtt CrearUsuarioFunction.Arn
+  CrearUsuarioApiUrl:
+    Description: "URL de la API Gateway para el evento de creación de usuario"
+    Value: !Sub "https://${UserApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/add"
