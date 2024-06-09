@@ -38,7 +38,7 @@ on:
 permissions:
   id-token: write
   contents: read
-  pull-requests: read, opened, synchronize, reopened
+  pull-requests: read
 
 jobs:
   Analysis:
