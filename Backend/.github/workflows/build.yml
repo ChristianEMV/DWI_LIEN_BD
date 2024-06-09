@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - master
+permissions:
+  id-token: write
+  contents: read
+
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
