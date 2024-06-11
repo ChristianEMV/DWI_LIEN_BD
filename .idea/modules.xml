@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/DWI_LIEN.iml" filepath="$PROJECT_DIR$/.idea/DWI_LIEN.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/LIEN_BACKEND.iml" filepath="$PROJECT_DIR$/.idea/LIEN_BACKEND.iml" />
     </modules>
   </component>
 </project>
