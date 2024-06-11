@@ -1,15 +1,19 @@
 name: Build
+
 on:
   push:
     branches:
       - master
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
 permissions:
   id-token: write
   contents: read
 
-  pull-requests:
-    opened, synchronize,reopened
-  
 jobs:
   sonarcloud:
     name: SonarCloud
