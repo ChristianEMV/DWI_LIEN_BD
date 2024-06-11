@@ -7,8 +7,9 @@ permissions:
   id-token: write
   contents: read
 
-  pull_requests:
-    types: [opened, synchronize, reopened]
+  pull-requests:
+    opened, synchronize,reopened
+  
 jobs:
   sonarcloud:
     name: SonarCloud
