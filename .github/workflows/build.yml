@@ -27,3 +27,75 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  deploy:
+    name: Deploy to AWS
+    runs-on: ubuntu-latest
+    needs: sonarcloud
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }} # Solo despliega en push a la rama main
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies for CrearUsuario
+        run: |
+          cd CrearUsuario
+          pip install -r requirements.txt
+
+      - name: Install dependencies for Altaprestamo
+        run: |
+          cd Altaprestamo
+          pip install -r requirements.txt
+
+      - name: Install dependencies for AltaBook
+        run: |
+          cd book/AltaBook/
+          pip install -r requirements.txt
+
+      - name: Install dependencies for EditBook
+        run: |
+          cd book/EditBook/
+          pip install -r requirements.txt
+
+      - name: Install dependencies for EliminarLibro
+        run: |
+          cd book/EliminarLibro/
+          pip install -r requirements.txt
+
+      - name: Install dependencies for RecupearLibros
+        run: |
+          cd book/RecupearLibros/
+          pip install -r requirements.txt
+
+      - name: Install dependencies for RecuperarLibro
+        run: |
+          cd book/RecuperarLibro/
+          pip install -r requirements.txt
+
+
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Install SAM CLI
+        run: |
+          pip install aws-sam-cli
+
+      - name: Build SAM application
+        run: sam build -t template.yaml
+
+      - name: Deploy SAM application
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name dukots --capabilities CAPABILITY_IAM --resolve-s3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
