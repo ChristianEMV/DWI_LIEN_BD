@@ -93,6 +93,9 @@ jobs:
       - name: Build SAM application
         run: sam build -t template.yaml
 
+      - name: Show AWS configuration
+        run: aws configure list
+  
       - name: Deploy SAM application
         run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name dukots --capabilities CAPABILITY_IAM --resolve-s3
         env:
