@@ -28,7 +28,7 @@ def lambda_handler(event, __):
 
         return {
             'statusCode': 200,
-            'body': json.dumps('Usuario creado exitosamente')
+            'body': json.dumps('Usuario creado exitosamente bebe')
         }
     except Exception as e:
         connection.rollback()
