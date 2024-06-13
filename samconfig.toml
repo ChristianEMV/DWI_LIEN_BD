@@ -4,7 +4,6 @@ stack_name = "dukots"
 resolve_s3 = true
 s3_prefix = "dukots"
 region = "us-east-2"
-profile = "manu"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 disable_rollback = true
