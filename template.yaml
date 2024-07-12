@@ -163,6 +163,23 @@ Resources:
             Path: /add
             Method: post
 
+  LoginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: login/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        CrearUsuarioEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref UserApi
+            Path: /login
+            Method: post
+
   AltaPrestamoFunction:
     Type: AWS::Serverless::Function
     Properties:
