@@ -1,0 +1,6 @@
+requests
+bcrypt
+pymysql
+json
+boto3
+ClientError
