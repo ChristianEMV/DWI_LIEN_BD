@@ -2,4 +2,3 @@ requests
 bcrypt
 pymysql
 boto3
-ClientError
