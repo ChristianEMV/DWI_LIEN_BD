@@ -1,14 +1,20 @@
 import json
 
-from Backend.book.RecuperarLibro.app import lambda_handler
+import unittest
 
 
-def test_lamnda_FindById():
-    mock = {
-        'body': json.dumps({
-            'idbook': '1',
-        })
-    }
+from book.RecuperarLibro.app import lambda_handler
 
-    regreso = lambda_handler(mock)
-    print(regreso)
+
+class TestApp(unittest.TestCase):
+
+    def test_lamnda_FindById(self):
+        mock = {
+            'body': json.dumps({
+                'idbook': '1',
+            })
+        }
+        __ = None
+
+        regreso = lambda_handler(mock, __)
+        print(regreso)
