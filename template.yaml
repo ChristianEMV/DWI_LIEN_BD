@@ -178,6 +178,21 @@ Resources:
             Path: /create_prestamo
             Method: post
 
+  LoginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: login/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        AltaPrestamoEvent:
+          Type: Api
+          Properties:
+            Path: /login
+            Method: post
+
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
