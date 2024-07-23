@@ -122,16 +122,17 @@ Resources:
       Architectures:
         - x86_64
       Events:
-        RecuperarLibrosEvent:
+        RecuperarLibrosOrderDateEvent:
           Type: Api
           Properties:
             RestApiId: !Ref BookApi
-            Path: /all
+            Path: /books
             Method: get
             RequestParameters:
-              - name: order
-                required: false
-                type: querystring
+              - Name: method.request.querystring.order
+                Required: false
+                Caching: false
+
 
 
   RecuperarLibroFunction:
