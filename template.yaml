@@ -129,11 +129,9 @@ Resources:
             Path: /books
             Method: get
             RequestParameters:
-              - Name: method.request.querystring.order
-                Required: false
-                Caching: false
-
-
+              - method.request.querystring.order:
+                  Required: true
+                  Caching: true
 
   RecuperarLibroFunction:
     Type: AWS::Serverless::Function
