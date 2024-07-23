@@ -112,6 +112,28 @@ Resources:
             Path: /all
             Method: get
 
+  RecuperarLibrosOrderDateFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: book/RecuperarLibrosOrdenFecha/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        RecuperarLibrosEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BookApi
+            Path: /all
+            Method: get
+            RequestParameters:
+              - name: order
+                required: false
+                type: querystring
+
+
   RecuperarLibroFunction:
     Type: AWS::Serverless::Function
     Properties:
