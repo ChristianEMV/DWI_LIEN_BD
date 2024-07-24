@@ -12,7 +12,10 @@ class TestApp(unittest.TestCase):
                 'fecha_publicacion': '2024-06-07',
                 'autor': 'Juan Araujo 2',
                 'editorial': 'La casa de los sueños',
-                'status': '1'
+                'status': '1',
+                'descripcion':'hola',
+                'categoria': 'hola'
+
             })
         }
         __ = None

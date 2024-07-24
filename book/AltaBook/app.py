@@ -16,13 +16,15 @@ def lambda_handler(event, __):
     autor = request_body['autor']
     editorial = request_body['editorial']
     status = request_body['status']
+    descripcion = request_body['descripcion']
+    categoria = request_body['categoria']
 
     connection = pymysql.connect(host=host, user=user, password=passw, db=db)
 
     try:
         with connection.cursor() as cursor:
-            insert_query = "INSERT INTO books (titulo, fecha_publicacion, autor, editorial, status) VALUES (%s, %s, %s, %s, %s)"
-            cursor.execute(insert_query, (titulo, fecha_publicacion, autor, editorial, status))
+            insert_query = "INSERT INTO books (titulo, fecha_publicacion, autor, editorial, status,descripcion,categoria) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            cursor.execute(insert_query, (titulo, fecha_publicacion, autor, editorial, status, descripcion, categoria))
         connection.commit()
         return {
             'statusCode': 200,

@@ -133,6 +133,49 @@ Resources:
                   Required: true
                   Caching: true
 
+  RecuperarLibrosByCategoriaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: book/RecuperarLibrosByCategoria/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        RecuperarLibrosOrderDateEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BookApi
+            Path: /books/search
+            Method: get
+            RequestParameters:
+              - method.request.querystring.category:
+                  Required: true
+                  Caching: true
+
+  RecuperarLibrosByTituloFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: book/RecuperarLibrosByTitulo/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        RecuperarLibrosByTitleEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BookApi
+            Path: /books/search
+            Method: get
+            RequestParameters:
+              - method.request.querystring.title:
+                  Required: true
+                  Caching: true
+
+
   RecuperarLibroFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -183,6 +226,23 @@ Resources:
             RestApiId: !Ref UserApi
             Path: /add
             Method: post
+
+  RecuperarUsuariosFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: user/RecuperarUsuarios/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        RecuperarUsuariosEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref UserApi
+            Path: /all
+            Method: get
 
   AltaPrestamoFunction:
     Type: AWS::Serverless::Function
