@@ -147,7 +147,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref BookApi
-            Path: /books/search
+            Path: /books/search-by-category
             Method: get
             RequestParameters:
               - method.request.querystring.category:
@@ -168,7 +168,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref BookApi
-            Path: /books/search
+            Path: /books/search-by-title
             Method: get
             RequestParameters:
               - method.request.querystring.title:
