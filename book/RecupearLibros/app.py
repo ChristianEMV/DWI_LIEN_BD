@@ -28,7 +28,8 @@ def lambda_handler(event, __):
                     'autor': result[3],
                     'editorial': result[4],
                     'status': result[5],
-
+                    'descripcion': result[6],
+                    'categoria': result[7],
                 }
                 books.append(book)
 
