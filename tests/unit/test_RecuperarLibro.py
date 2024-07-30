@@ -9,12 +9,19 @@ from book.RecuperarLibro.app import lambda_handler
 class TestApp(unittest.TestCase):
 
     def test_lamnda_FindById(self):
-        mock = {
-            'body': json.dumps({
-                'idbook': '1',
-            })
+        event = {
+            'requestContext': {
+                'authorizer': {
+                    'claims': {
+                        'cognito:groups': '["admin"]'  # El token debe indicar que el usuario pertenece al grupo 'admin'
+                    }
+                }
+            },
+            'pathParameters': {
+                'idbook': '1'
+            }
         }
         __ = None
 
-        regreso = lambda_handler(mock, __)
+        regreso = lambda_handler(event, __)
         print(regreso)
