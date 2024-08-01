@@ -6,14 +6,17 @@ import unittest
 from book.RecuperarLibro.app import lambda_handler
 
 
+import unittest
+import json
+
 class TestApp(unittest.TestCase):
 
-    def test_lamnda_FindById(self):
+    def test_lambda_FindById(self):
         event = {
             'requestContext': {
                 'authorizer': {
                     'claims': {
-                        'cognito:groups': '["admin"]'  # El token debe indicar que el usuario pertenece al grupo 'admin'
+                        'cognito:groups': ['admin']
                     }
                 }
             },
@@ -23,5 +26,9 @@ class TestApp(unittest.TestCase):
         }
         __ = None
 
-        regreso = lambda_handler(event, __)
-        print(regreso)
+        response = lambda_handler(event, __)
+        print(response)
+        self.assertEqual(response['statusCode'], 200)
+
+if __name__ == '__main__':
+    unittest.main()
