@@ -2,9 +2,10 @@ import json
 import pymysql
 from datetime import date
 
+# Configuración de la base de datos
 host = "database-lien.cpu2e8akkntd.us-east-2.rds.amazonaws.com"
 user = "admin"
-passw = "password"
+password = "password"
 db = "lien"
 
 
@@ -12,7 +13,7 @@ def lambda_handler(event, context):
     try:
         print("Event: ", json.dumps(event))
 
-        user_groups = event.get('claims', {}).get('cognito:groups', [])
+        user_groups = event.get('requestContext', {}).get('authorizer', {}).get('claims', {}).get('cognito:groups', [])
 
         if 'admin' not in user_groups:
             return {
@@ -20,9 +21,15 @@ def lambda_handler(event, context):
                 'body': json.dumps('Acceso denegado. Solo los administradores pueden realizar esta acción.')
             }
 
-        idbook = event.get('idbook', '').strip()
+        idbook = event.get('pathParameters', {}).get('idbook', '').strip()
 
-        connection = pymysql.connect(host=host, user=user, password=passw, db=db)
+        if not idbook:
+            return {
+                'statusCode': 400,
+                'body': json.dumps('Parámetro idbook es requerido')
+            }
+
+        connection = pymysql.connect(host=host, user=user, password=password, db=db)
 
         try:
             with connection.cursor() as cursor:
