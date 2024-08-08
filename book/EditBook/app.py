@@ -35,6 +35,11 @@ def lambda_handler(event, __):
                     response_message = 'Libro no encontrado'
                     return {
                         'statusCode': 404,
+                        'headers': {
+                            'Access-Control-Allow-Origin': '*',
+                            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                            'Access-Control-Allow-Methods': 'PUT, OPTIONS'
+                        },
                         'body': json.dumps(response_message)
                     }
 
@@ -42,6 +47,11 @@ def lambda_handler(event, __):
             response_message = 'Libro actualizado'
             return {
                 'statusCode': 200,
+                'headers': {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                    'Access-Control-Allow-Methods': 'PUT, OPTIONS'
+                },
                 'body': json.dumps(response_message)
             }
 
@@ -49,6 +59,11 @@ def lambda_handler(event, __):
             connection.rollback()
             return {
                 'statusCode': 500,
+                'headers': {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                    'Access-Control-Allow-Methods': 'PUT, OPTIONS'
+                },
                 'body': json.dumps(f'Error al actualizar en la base de datos: {str(e)}')
             }
 
@@ -58,5 +73,10 @@ def lambda_handler(event, __):
     except Exception as e:
         return {
             'statusCode': 400,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                'Access-Control-Allow-Methods': 'PUT, OPTIONS'
+            },
             'body': json.dumps(f'Error en la petición: {str(e)}')
         }
