@@ -175,7 +175,6 @@ Resources:
                   Required: true
                   Caching: true
 
-
   RecuperarLibroFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -207,7 +206,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref BookApi
-            Path: /delete
+            Path: /delete/{idbook}
             Method: delete
 
   CrearUsuarioFunction:

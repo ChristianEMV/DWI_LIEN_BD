@@ -9,8 +9,8 @@ db = "lien"
 
 
 def lambda_handler(event, __):
-    request_body = json.loads(event['body'])
-    idbook = request_body['idbook']
+
+    idbook = event.get('pathParameters', {}).get('idbook', '').strip()
     connection = pymysql.connect(host=host, user=user, password=passw, db=db)
 
     try:
@@ -22,6 +22,11 @@ def lambda_handler(event, __):
             if not result:
                 return {
                     'statusCode': 404,
+                    'headers': {
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                        'Access-Control-Allow-Methods': 'DELETE, OPTIONS',
+                    },
                     'body': json.dumps('Libro no encontrado')
                 }
 
@@ -31,6 +36,11 @@ def lambda_handler(event, __):
 
             return {
                 'statusCode': 200,
+                'headers': {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                    'Access-Control-Allow-Methods': 'DELETE, OPTIONS',
+                },
                 'body': json.dumps('Libro eliminado')
             }
 
@@ -38,6 +48,11 @@ def lambda_handler(event, __):
         connection.rollback()
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                'Access-Control-Allow-Methods': 'DELETE, OPTIONS',
+            },
             'body': json.dumps('Error al insertar en la base de datos: {}'.format(str(e)))
         }
     finally:
