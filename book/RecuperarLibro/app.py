@@ -8,6 +8,12 @@ user = "admin"
 password = "password"
 db = "lien"
 
+HEADERS = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+}
+
 
 def lambda_handler(event, context):
     try:
@@ -18,6 +24,7 @@ def lambda_handler(event, context):
         if 'admin' not in user_groups:
             return {
                 'statusCode': 403,
+                'headers': HEADERS,
                 'body': json.dumps('Acceso denegado. Solo los administradores pueden realizar esta acción.')
             }
 
@@ -26,6 +33,7 @@ def lambda_handler(event, context):
         if not idbook:
             return {
                 'statusCode': 400,
+                'headers': HEADERS,
                 'body': json.dumps('Parámetro idbook es requerido')
             }
 
@@ -52,17 +60,20 @@ def lambda_handler(event, context):
 
                 return {
                     'statusCode': 200,
+                    'headers': HEADERS,
                     'body': json.dumps(book_data)
                 }
             else:
                 return {
                     'statusCode': 404,
+                    'headers': HEADERS,
                     'body': json.dumps('Libro no encontrado')
                 }
 
         except Exception as e:
             return {
                 'statusCode': 500,
+                'headers': HEADERS,
                 'body': json.dumps(f'Error al recuperar el libro: {str(e)}')
             }
 
@@ -72,10 +83,12 @@ def lambda_handler(event, context):
     except KeyError as e:
         return {
             'statusCode': 400,
+            'headers': HEADERS,
             'body': json.dumps(f'Error en el evento: {str(e)}')
         }
     except Exception as e:
         return {
             'statusCode': 500,
+            'headers': HEADERS,
             'body': json.dumps(f'Error desconocido: {str(e)}')
         }

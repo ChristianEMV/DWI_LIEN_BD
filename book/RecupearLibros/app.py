@@ -3,11 +3,16 @@ import json
 
 from datetime import date
 
-
 host = "database-lien.cpu2e8akkntd.us-east-2.rds.amazonaws.com"
 user = "admin"
 passw = "password"
 db = "lien"
+
+HEADERS = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS'
+}
 
 
 def lambda_handler(event, __):
@@ -35,12 +40,14 @@ def lambda_handler(event, __):
 
         return {
             'statusCode': 200,
+            'headers': HEADERS,
             'body': json.dumps(books)
         }
 
     except Exception as e:
         return {
             'statusCode': 500,
+            'headers': HEADERS,
             'body': json.dumps('Error al recuperar los libros: {}'.format(str(e)))
         }
 

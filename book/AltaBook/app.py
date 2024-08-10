@@ -1,11 +1,16 @@
 import pymysql
 import json
 
-
 host = "database-lien.cpu2e8akkntd.us-east-2.rds.amazonaws.com"
 user = "admin"
 passw = "password"
 db = "lien"
+
+HEADERS = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+}
 
 
 def lambda_handler(event, __):
@@ -28,12 +33,14 @@ def lambda_handler(event, __):
         connection.commit()
         return {
             'statusCode': 200,
+            'headers': HEADERS,
             'body': json.dumps('Libro registado exitosamente')
         }
     except Exception as e:
         connection.rollback()
         return {
             'statusCode': 500,
+            'headers': HEADERS,
             'body': json.dumps('Error al insertar en la base de datos: {}'.format(str(e)))
         }
     finally:
