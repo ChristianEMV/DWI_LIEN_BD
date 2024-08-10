@@ -9,6 +9,12 @@ user = "admin"
 passw = "password"
 db = "lien"
 
+HEADERS = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS'
+}
+
 
 def lambda_handler(event, context):
     search_term = event['queryStringParameters'].get('title', '').strip()
@@ -16,11 +22,7 @@ def lambda_handler(event, context):
     if not search_term:
         return {
             'statusCode': 400,
-            'headers': {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS'
-            },
+            'headers': HEADERS,
             'body': json.dumps('Parámetro de búsqueda "title" no proporcionado.')
         }
 
@@ -51,22 +53,14 @@ def lambda_handler(event, context):
 
         return {
             'statusCode': 200,
-            'headers': {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS'
-            },
+            'headers': HEADERS,
             'body': json.dumps(books)
         }
 
     except Exception as e:
         return {
             'statusCode': 500,
-            'headers': {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS'
-            },
+            'headers': HEADERS,
             'body': json.dumps('Error al recuperar los libros: {}'.format(str(e)))
         }
 

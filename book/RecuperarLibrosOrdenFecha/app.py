@@ -8,6 +8,12 @@ user = "admin"
 passw = "password"
 db = "lien"
 
+HEADERS = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS'
+}
+
 
 def lambda_handler(event, __):
     order = event['queryStringParameters'].get('order', 'asc')
@@ -15,11 +21,7 @@ def lambda_handler(event, __):
     if order not in ['asc', 'desc']:
         return {
             'statusCode': 400,
-            'headers': {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS'
-            },
+            'headers': HEADERS,
             'body': json.dumps('Parámetro de orden inválido. Use "asc" o "desc".')
         }
 
@@ -55,11 +57,7 @@ def lambda_handler(event, __):
 
         return {
             'statusCode': 500,
-            'headers': {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS'
-            },
+            'headers': HEADERS,
             'body': json.dumps('Error al recuperar los libros: {}'.format(str(e)))
         }
 

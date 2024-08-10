@@ -8,6 +8,12 @@ user = "admin"
 passw = "password"
 db = "lien"
 
+HEADERS = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+}
+
 
 def lambda_handler(event, __):
     try:
@@ -28,22 +34,14 @@ def lambda_handler(event, __):
 
         return {
             'statusCode': 200,
-            'headers': {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                'Access-Control-Allow-Methods': 'POST, OPTIONS'
-            },
+            'headers': HEADERS,
             'body': json.dumps('Usuario creado exitosamente bebe')
         }
     except Exception as e:
         connection.rollback()
         return {
             'statusCode': 500,
-            'headers': {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                'Access-Control-Allow-Methods': 'POST, OPTIONS'
-            },
+            'headers': HEADERS,
             'body': json.dumps(f'Error al crear usuario: {str(e)}')
         }
     finally:

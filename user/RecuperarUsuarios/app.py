@@ -7,6 +7,12 @@ user = "admin"
 passw = "password"
 db = "lien"
 
+HEADERS = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS'
+}
+
 
 def lambda_handler(event, __):
     connection = pymysql.connect(host=host, user=user, password=passw, db=db)
@@ -28,22 +34,14 @@ def lambda_handler(event, __):
 
         return {
             'statusCode': 200,
-            'headers': {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS'
-            },
+            'headers': HEADERS,
             'body': json.dumps(users)
         }
 
     except Exception as e:
         return {
             'statusCode': 500,
-            'headers': {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS'
-            },
+            'headers': HEADERS,
             'body': json.dumps('Error al recuperar los usuarios: {}'.format(str(e)))
         }
 
