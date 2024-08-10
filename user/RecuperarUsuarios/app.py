@@ -28,12 +28,22 @@ def lambda_handler(event, __):
 
         return {
             'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                'Access-Control-Allow-Methods': 'GET, OPTIONS'
+            },
             'body': json.dumps(users)
         }
 
     except Exception as e:
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                'Access-Control-Allow-Methods': 'GET, OPTIONS'
+            },
             'body': json.dumps('Error al recuperar los usuarios: {}'.format(str(e)))
         }
 

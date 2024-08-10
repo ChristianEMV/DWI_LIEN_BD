@@ -30,17 +30,32 @@ def lambda_handler(event, __):
                 connection.commit()
                 return {
                     'statusCode': 200,
+                    'headers': {
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+                    },
                     'body': json.dumps('Préstamo exitoso')
                 }
             else:
                 return {
                     'statusCode': 400,
+                    'headers': {
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+                    },
                     'body': json.dumps('El libro no está disponible para préstamo')
                 }
     except Exception as e:
         connection.rollback()
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                'Access-Control-Allow-Methods': 'POST, OPTIONS'
+            },
             'body': json.dumps('Error al insertar en la base de datos: {}'.format(str(e)))
         }
     finally:
