@@ -46,6 +46,12 @@ Resources:
       Name: UserApi
       StageName: Prod
 
+  PrestamoApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: PrestamoApi
+      StageName: Prod
+
   HelloWorldFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -243,6 +249,23 @@ Resources:
             Path: /all
             Method: get
 
+  EliminarUsuarioFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: EliminarUsuario/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        EliminarUsuarioEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref UserApi
+            Path: /delete_user
+            Method: POST
+
   AltaPrestamoFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -258,6 +281,40 @@ Resources:
             Path: /create_prestamo
             Method: post
 
+  BajaPrestamoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: BajaPrestamo/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        BajaPrestamoEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PrestamoApi
+            Path: /low_prestamo
+            Method: post
+
+  RecuperarPrestamosFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: RecuperarPrestamos/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        RecuperarPrestamosEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PrestamoApi
+            Path: /prestamos
+            Method: get
+
   LoginFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -271,6 +328,21 @@ Resources:
           Type: Api
           Properties:
             Path: /login
+            Method: post
+
+  CambiarContraseniaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: CambiarContrasenia/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        CambiarContraseniavent:
+          Type: Api
+          Properties:
+            Path: /change-password
             Method: post
 
 

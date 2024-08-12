@@ -1,15 +1,13 @@
 import json
 import unittest
 
-from Altaprestamo import app
+from BajaPrestamo import app
 
 class TestApp(unittest.TestCase):
     def test_lambda_post(self):
         mock = {
             'body': json.dumps({
-                'fecha_inicio': '2024-06-07',
-                'fecha_fin': '2024-06-19',
-                'iduser': '2',
+                'idprestamo': '9',
                 'idbook': '46'
             })
         }
