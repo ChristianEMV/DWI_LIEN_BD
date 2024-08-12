@@ -20,21 +20,24 @@ def lambda_handler(event, __):
     iduser = request_body['iduser']
     idbook = request_body['idbook']
 
+    if not all([fecha_inicio, idbook, fecha_fin, iduser]):
+        return {
+            "statusCode": 400,
+            "body": json.dumps({"message": "Faltan parámetros de entrada"})
+        }
+
     connection = pymysql.connect(host=host, user=user, password=passw, db=db)
 
     try:
         with connection.cursor() as cursor:
-            # Verificar el estado del libro
             select_query = "SELECT status FROM books WHERE idbook = %s"
             cursor.execute(select_query, (idbook,))
             result = cursor.fetchone()
 
-            if result and result[0] == "0":
-                # Insertar el préstamo
+            if result and result[0] == 0:
                 insert_query = "INSERT INTO prestamos (fecha_inicio, fecha_fin, iduser, idbook) VALUES (%s, %s, %s, %s)"
                 cursor.execute(insert_query, (fecha_inicio, fecha_fin, iduser, idbook))
 
-                # Actualizar el estatus del libro a 1 (prestado)
                 update_query = "UPDATE books SET status = '1' WHERE idbook = %s"
                 cursor.execute(update_query, (idbook,))
 
