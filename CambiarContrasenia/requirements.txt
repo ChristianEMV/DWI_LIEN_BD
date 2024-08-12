@@ -1,6 +1,4 @@
 requests
 bcrypt
 pymysql
-random
-string
 boto3
