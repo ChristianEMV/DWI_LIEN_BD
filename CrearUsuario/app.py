@@ -30,6 +30,7 @@ def lambda_handler(event, __):
         if not all([email, user_name, nombre, fechanacimiento, phone]):
             return {
                 "statusCode": 400,
+                'headers': HEADERS,
                 "body": json.dumps({"message": "Faltan parámetros de entrada"})
             }
 
