@@ -18,6 +18,7 @@ HEADERS = {
 
 
 def lambda_handler(event, __):
+    connection = None
     try:
         request_body = json.loads(event['body'])
         nombre = request_body.get('nombre')
@@ -69,14 +70,16 @@ def lambda_handler(event, __):
                 'body': json.dumps('Usuario creado exitosamente')
             }
     except Exception as e:
-        connection.rollback()
+        if connection:
+            connection.rollback()
         return {
             'statusCode': 500,
             'headers': HEADERS,
             'body': json.dumps(f'Error al crear usuario: {str(e)}')
         }
     finally:
-        connection.close()
+        if connection:
+            connection.close()
 
 
 def generate_temporary_password(length=12):
