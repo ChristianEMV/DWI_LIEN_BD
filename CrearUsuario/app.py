@@ -26,7 +26,7 @@ def lambda_handler(event, __):
         fechanacimiento = request_body.get('fechanacimiento')
         phone = request_body.get('phone')
 
-        user_name = request_body.get('user_name')
+        user_name = request_body.get('username')
         password = generate_temporary_password()
 
         if not all([email, user_name, nombre, fechanacimiento, phone]):

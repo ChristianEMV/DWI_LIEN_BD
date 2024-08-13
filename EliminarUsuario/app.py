@@ -18,7 +18,7 @@ def lambda_handler(event, __):
     connection = None
     try:
         request_body = json.loads(event['body'])
-        user_name = request_body.get('user_name')
+        user_name = request_body.get('username')
 
         if not user_name:
             return {
