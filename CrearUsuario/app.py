@@ -16,6 +16,7 @@ HEADERS = {
     'Access-Control-Allow-Methods': 'POST, OPTIONS'
 }
 
+
 def lambda_handler(event, __):
     try:
         request_body = json.loads(event['body'])
@@ -56,16 +57,17 @@ def lambda_handler(event, __):
         )
 
         connection = pymysql.connect(host=host, user=user, password=passw, db=db)
+
         with connection.cursor() as cursor:
             sql = "INSERT INTO users (nombre, email, fechanacimiento, username, phone) VALUES (%s, %s, %s, %s, %s)"
             cursor.execute(sql, (nombre, email, fechanacimiento, user_name, phone))
-        connection.commit()
 
-        return {
-            'statusCode': 200,
-            'headers': HEADERS,
-            'body': json.dumps('Usuario creado exitosamente')
-        }
+            connection.commit()
+            return {
+                'statusCode': 200,
+                'headers': HEADERS,
+                'body': json.dumps('Usuario creado exitosamente')
+            }
     except Exception as e:
         connection.rollback()
         return {
