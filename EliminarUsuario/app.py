@@ -15,6 +15,7 @@ HEADERS = {
 }
 
 def lambda_handler(event, __):
+    connection = None
     try:
         request_body = json.loads(event['body'])
         user_name = request_body.get('user_name')
@@ -38,7 +39,7 @@ def lambda_handler(event, __):
         with connection.cursor() as cursor:
             sql = "DELETE FROM users WHERE username = %s"
             cursor.execute(sql, (user_name,))
-        connection.commit()
+            connection.commit()
 
         return {
             'statusCode': 200,
@@ -52,11 +53,13 @@ def lambda_handler(event, __):
             'body': json.dumps(f'Error al eliminar usuario de Cognito: {e.response["Error"]["Message"]}')
         }
     except Exception as e:
-        connection.rollback()
+        if connection:
+            connection.rollback()
         return {
             'statusCode': 500,
             'headers': HEADERS,
             'body': json.dumps(f'Error al eliminar usuario: {str(e)}')
         }
     finally:
-        connection.close()
+        if connection:
+            connection.close()
