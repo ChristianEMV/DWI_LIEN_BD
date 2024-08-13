@@ -29,6 +29,9 @@ def lambda_handler(event, __):
                     'iduser': result[0],
                     'nombre': result[1],
                     'email': result[2],
+                    'fechanacimiento': result[3],
+                    'phone': result[4],
+                    'username': result[5],
                 }
                 users.append(userR)
 
