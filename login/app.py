@@ -44,6 +44,7 @@ def lambda_handler(event, __):
 
         return {
             'statusCode': 200,
+            'headers': HEADERS,
             'body': json.dumps({
                 'id_token': id_token,
                 'access_token': access_token,
