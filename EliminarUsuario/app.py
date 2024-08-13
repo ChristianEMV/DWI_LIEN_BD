@@ -22,6 +22,7 @@ def lambda_handler(event, __):
         if not user_name:
             return {
                 "statusCode": 400,
+                'headers': HEADERS,
                 "body": json.dumps({"message": "Falta el parámetro 'user_name'"})
             }
 
