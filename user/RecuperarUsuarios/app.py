@@ -1,5 +1,6 @@
 import pymysql
 import json
+from datetime import date
 
 
 host = "database-lien.cpu2e8akkntd.us-east-2.rds.amazonaws.com"
@@ -29,7 +30,7 @@ def lambda_handler(event, __):
                     'iduser': result[0],
                     'nombre': result[1],
                     'email': result[2],
-                    'fechanacimiento': result[3],
+                    'fechanacimiento': result[3].isoformat() if isinstance(result[3], date) else result[3],
                     'phone': result[4],
                     'username': result[5],
                 }
