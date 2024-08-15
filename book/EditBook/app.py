@@ -25,11 +25,13 @@ def get_secret():
     secret = json.loads(get_secret_value_response['SecretString'])
     return secret
 
+
 HEADERS = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Allow-Methods': 'PUT, OPTIONS'
 }
+
 
 def lambda_handler(event, __):
     try:
@@ -41,6 +43,15 @@ def lambda_handler(event, __):
 
         if not all([host, user, password, db]):
             raise ValueError("Faltan uno o más parámetros requeridos en el secreto.")
+
+        user_groups = event.get('requestContext', {}).get('authorizer', {}).get('claims', {}).get('cognito:groups', [])
+
+        if 'admin' not in user_groups:
+            return {
+                'statusCode': 403,
+                'headers': HEADERS,
+                'body': json.dumps('Acceso denegado. Solo los administradores pueden realizar esta acción.')
+            }
 
         request_body = json.loads(event['body'])
         idbook = request_body.get('idbook')

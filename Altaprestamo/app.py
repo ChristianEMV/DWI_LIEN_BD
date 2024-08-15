@@ -42,6 +42,15 @@ def lambda_handler(event, context):
         if not all([host, user, password, db]):
             raise ValueError("Faltan uno o más parámetros requeridos en el secreto.")
 
+        user_groups = event.get('requestContext', {}).get('authorizer', {}).get('claims', {}).get('cognito:groups', [])
+
+        if 'admin' not in user_groups:
+            return {
+                'statusCode': 403,
+                'headers': HEADERS,
+                'body': json.dumps('Acceso denegado. Solo los administradores pueden realizar esta acción.')
+            }
+
         if not event.get('body'):
             return {
                 'statusCode': 400,

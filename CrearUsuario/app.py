@@ -6,6 +6,7 @@ import string
 import boto3
 from botocore.exceptions import ClientError
 
+
 def get_secret():
     secret_name = "prodLien"
     region_name = "us-east-2"
@@ -33,7 +34,8 @@ HEADERS = {
     'Access-Control-Allow-Methods': 'POST, OPTIONS'
 }
 
-def lambda_handler(event, __):
+
+def lambda_handler(event, context):
     connection = None
     try:
         secret = get_secret()
@@ -45,12 +47,20 @@ def lambda_handler(event, __):
         if not all([host, user, passw, db]):
             raise ValueError("Faltan uno o más parámetros requeridos en el secreto.")
 
+        user_groups = event.get('requestContext', {}).get('authorizer', {}).get('claims', {}).get('cognito:groups', [])
+
+        if 'admin' not in user_groups:
+            return {
+                'statusCode': 403,
+                'headers': HEADERS,
+                'body': json.dumps('Acceso denegado. Solo los administradores pueden realizar esta acción.')
+            }
+
         request_body = json.loads(event['body'])
         nombre = request_body.get('nombre')
         email = request_body.get('email')
         fechanacimiento = request_body.get('fechanacimiento')
         phone = request_body.get('phone')
-
         user_name = request_body.get('username')
         password = generate_temporary_password()
 

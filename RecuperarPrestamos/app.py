@@ -19,8 +19,8 @@ def get_secret():
         get_secret_value_response = client.get_secret_value(
             SecretId=secret_name
         )
-    except KeyError as e:
-        logging.exception('Error al acceder a la dict')
+    except ClientError as e:
+        logging.exception('Error al acceder al secreto')
         raise e
 
     secret = json.loads(get_secret_value_response['SecretString'])
@@ -32,7 +32,16 @@ HEADERS = {
     'Access-Control-Allow-Methods': 'GET, OPTIONS'
 }
 
-def lambda_handler(event, __):
+def lambda_handler(event, context):
+    user_groups = event.get('requestContext', {}).get('authorizer', {}).get('claims', {}).get('cognito:groups', [])
+
+    if 'admin' not in user_groups:
+        return {
+            'statusCode': 403,
+            'headers': HEADERS,
+            'body': json.dumps('Acceso denegado. Solo los administradores pueden realizar esta acción.')
+        }
+
     secret = get_secret()
     host = secret.get("host")
     user = secret.get("username")
