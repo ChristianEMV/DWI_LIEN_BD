@@ -1,12 +1,8 @@
+import boto3
+from botocore.exceptions import ClientError
 import pymysql
 import json
-
 from datetime import date
-
-host = "database-lien.cpu2e8akkntd.us-east-2.rds.amazonaws.com"
-user = "admin"
-passw = "password"
-db = "lien"
 
 HEADERS = {
     'Access-Control-Allow-Origin': '*',
@@ -14,8 +10,38 @@ HEADERS = {
     'Access-Control-Allow-Methods': 'GET, OPTIONS'
 }
 
+def get_secret():
+    secret_name = "prodLien"
+    region_name = "us-east-2"
+
+    # Crea un cliente de Secrets Manager
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+    )
+
+    try:
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )
+    except ClientError as e:
+        raise e
+
+    secret = get_secret_value_response['SecretString']
+    return json.loads(secret)
 
 def lambda_handler(event, __):
+    # Recupera las credenciales desde Secrets Manager
+    secret = get_secret()
+
+    # Extrae las credenciales del secreto
+    host = secret["host"]
+    user = secret["username"]
+    passw = secret["password"]
+    db = secret["db"]
+
+    # Conexión a la base de datos usando las credenciales recuperadas
     connection = pymysql.connect(host=host, user=user, password=passw, db=db)
 
     try:
