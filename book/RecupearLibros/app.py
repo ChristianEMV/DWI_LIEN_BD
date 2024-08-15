@@ -1,3 +1,4 @@
+import logging
 import boto3
 from botocore.exceptions import ClientError
 import pymysql
@@ -8,7 +9,6 @@ def get_secret():
     secret_name = "prodLien"
     region_name = "us-east-2"
 
-    # Create a Secrets Manager client
     session = boto3.session.Session()
     client = session.client(
         service_name='secretsmanager',
@@ -19,11 +19,10 @@ def get_secret():
         get_secret_value_response = client.get_secret_value(
             SecretId=secret_name
         )
-    except ClientError as e:
-        # Handle the exception
+    except KeyError as e:
+        logging.exception('Error al acceder a la dict')
         raise e
 
-    # Parse the secret string into a dictionary
     secret = json.loads(get_secret_value_response['SecretString'])
     return secret
 
@@ -36,16 +35,14 @@ HEADERS = {
 def lambda_handler(event, context):
     try:
         secret = get_secret()
-
-        # Extract database connection parameters
+        print(secret)
         host = secret.get("host")
-        user = secret.get("user")
+        user = secret.get("username")
         password = secret.get("password")
-        db = secret.get("db")
+        db = secret.get("dbInstanceIdentifier")
 
-        # Check if all required parameters are available
         if not all([host, user, password, db]):
-            raise ValueError("Missing one or more required parameters in the secret")
+            raise ValueError("Faltan uno o más parámetros requeridos en el secreto")
 
         connection = pymysql.connect(host=host, user=user, password=password, db=db)
 

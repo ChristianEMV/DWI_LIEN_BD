@@ -10,8 +10,8 @@ class TestApp(unittest.TestCase):
     def test_lambda_post(self):
         mock = {
             'body': json.dumps({
-                'idbook': '21',
-                'titulo': 'EL gordito tiste',
+                'idbook': '54',
+                'titulo': 'EL gordito acutalizado',
                 'fecha_publicacion': '2024-06-07',
                 'autor': 'SAMUEL',
                 'editorial': 'La casa de los sueños',

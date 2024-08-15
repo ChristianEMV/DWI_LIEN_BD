@@ -1,12 +1,30 @@
-import json
+import logging
+import boto3
+from botocore.exceptions import ClientError
 import pymysql
+import json
 from datetime import date
 
-# Configuración de la base de datos
-host = "database-lien.cpu2e8akkntd.us-east-2.rds.amazonaws.com"
-user = "admin"
-password = "password"
-db = "lien"
+def get_secret():
+    secret_name = "prodLien"
+    region_name = "us-east-2"
+
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+    )
+
+    try:
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )
+    except KeyError as e:
+        logging.exception('Error al acceder a la dict')
+        raise e
+
+    secret = json.loads(get_secret_value_response['SecretString'])
+    return secret
 
 HEADERS = {
     'Access-Control-Allow-Origin': '*',
@@ -14,10 +32,16 @@ HEADERS = {
     'Access-Control-Allow-Methods': 'POST, OPTIONS'
 }
 
-
 def lambda_handler(event, context):
     try:
-        print("Event: ", json.dumps(event))
+        secret = get_secret()
+        host = secret.get("host")
+        user = secret.get("username")
+        password = secret.get("password")
+        db = secret.get("dbInstanceIdentifier")
+
+        if not all([host, user, password, db]):
+            raise ValueError("Faltan uno o más parámetros requeridos en el secreto.")
 
         user_groups = event.get('requestContext', {}).get('authorizer', {}).get('claims', {}).get('cognito:groups', [])
 
@@ -80,6 +104,12 @@ def lambda_handler(event, context):
         finally:
             connection.close()
 
+    except ValueError as ve:
+        return {
+            'statusCode': 400,
+            'headers': HEADERS,
+            'body': json.dumps(f'Error en los datos de entrada: {str(ve)}')
+        }
     except KeyError as e:
         return {
             'statusCode': 400,

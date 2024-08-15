@@ -1,14 +1,18 @@
 import json
 
-from Backend.book.EliminarLibro.app import lambda_handler
+from book.EliminarLibro import app
+
+import unittest
 
 
-def test_lamnda_DeleteBook():
-    mock = {
-        'body': json.dumps({
-            'idbook': '2',
-        })
-    }
+class TestApp(unittest.TestCase):
 
-    regreso = lambda_handler(mock)
-    print(regreso)
+    def test_lambda_post(self):
+        mock = {
+            'pathParameters': {
+                'idbook': '54'
+            }
+        }
+        __ = None
+        regreso = app.lambda_handler(mock, __)
+        print(regreso)
