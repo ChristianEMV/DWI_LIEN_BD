@@ -7,8 +7,8 @@ class TestApp(unittest.TestCase):
     def test_lambda_post(self):
         mock = {
             'body': json.dumps({
-                'idprestamo': '9',
-                'idbook': '46'
+                'idprestamo': '14',
+                'idbook': '49'
             })
         }
         __ = None

@@ -1,12 +1,29 @@
+import logging
 import pymysql
 import json
 import boto3
 from botocore.exceptions import ClientError
 
-host = "database-lien.cpu2e8akkntd.us-east-2.rds.amazonaws.com"
-user = "admin"
-passw = "password"
-db = "lien"
+def get_secret():
+    secret_name = "prodLien"
+    region_name = "us-east-2"
+
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+    )
+
+    try:
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )
+    except KeyError as e:
+        logging.exception('Error al acceder a la dict')
+        raise e
+
+    secret = json.loads(get_secret_value_response['SecretString'])
+    return secret
 
 HEADERS = {
     'Access-Control-Allow-Origin': '*',
@@ -17,6 +34,15 @@ HEADERS = {
 def lambda_handler(event, __):
     connection = None
     try:
+        secret = get_secret()
+        host = secret.get("host")
+        user = secret.get("username")
+        passw = secret.get("password")
+        db = secret.get("dbInstanceIdentifier")
+
+        if not all([host, user, passw, db]):
+            raise ValueError("Faltan uno o más parámetros requeridos en el secreto.")
+
         request_body = json.loads(event['body'])
         user_name = request_body.get('username')
 

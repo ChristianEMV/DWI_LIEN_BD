@@ -1,3 +1,4 @@
+import logging
 import pymysql
 import json
 import random
@@ -5,10 +6,26 @@ import string
 import boto3
 from botocore.exceptions import ClientError
 
-host = "database-lien.cpu2e8akkntd.us-east-2.rds.amazonaws.com"
-user = "admin"
-passw = "password"
-db = "lien"
+def get_secret():
+    secret_name = "prodLien"
+    region_name = "us-east-2"
+
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+    )
+
+    try:
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )
+    except KeyError as e:
+        logging.exception('Error al acceder a la dict')
+        raise e
+
+    secret = json.loads(get_secret_value_response['SecretString'])
+    return secret
 
 HEADERS = {
     'Access-Control-Allow-Origin': '*',
@@ -16,10 +33,18 @@ HEADERS = {
     'Access-Control-Allow-Methods': 'POST, OPTIONS'
 }
 
-
 def lambda_handler(event, __):
     connection = None
     try:
+        secret = get_secret()
+        host = secret.get("host")
+        user = secret.get("username")
+        passw = secret.get("password")
+        db = secret.get("dbInstanceIdentifier")
+
+        if not all([host, user, passw, db]):
+            raise ValueError("Faltan uno o más parámetros requeridos en el secreto.")
+
         request_body = json.loads(event['body'])
         nombre = request_body.get('nombre')
         email = request_body.get('email')
@@ -39,7 +64,6 @@ def lambda_handler(event, __):
         client = boto3.client('cognito-idp', region_name='us-east-2')
         user_pool_id = "us-east-2_Dak0N3NUX"
 
-        # Crea el usuario en Cognito con una contraseña temporal
         client.admin_create_user(
             UserPoolId=user_pool_id,
             Username=user_name,
@@ -50,7 +74,6 @@ def lambda_handler(event, __):
             TemporaryPassword=password
         )
 
-        # Asigna el usuario al grupo "usuario"
         client.admin_add_user_to_group(
             UserPoolId=user_pool_id,
             Username=user_name,
