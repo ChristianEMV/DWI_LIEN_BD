@@ -31,7 +31,8 @@ HEADERS = {
     'Access-Control-Allow-Methods': 'POST, OPTIONS'
 }
 
-def lambda_handler(event, __):
+
+def lambda_handler(event, context):
     connection = None
     try:
         secret = get_secret()
@@ -43,6 +44,15 @@ def lambda_handler(event, __):
         if not all([host, user, passw, db]):
             raise ValueError("Faltan uno o más parámetros requeridos en el secreto.")
 
+        user_groups = event.get('requestContext', {}).get('authorizer', {}).get('claims', {}).get('cognito:groups', [])
+
+        if 'admin' not in user_groups:
+            return {
+                'statusCode': 403,
+                'headers': HEADERS,
+                'body': json.dumps('Acceso denegado. Solo los administradores pueden realizar esta acción.')
+            }
+
         request_body = json.loads(event['body'])
         user_name = request_body.get('username')
 
@@ -50,7 +60,7 @@ def lambda_handler(event, __):
             return {
                 "statusCode": 400,
                 'headers': HEADERS,
-                "body": json.dumps({"message": "Falta el parámetro 'user_name'"})
+                "body": json.dumps({"message": "Falta el parámetro 'username'"})
             }
 
         client = boto3.client('cognito-idp', region_name='us-east-2')

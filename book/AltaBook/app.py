@@ -53,6 +53,15 @@ def lambda_handler(event, __):
         }
 
     try:
+        user_groups = event.get('requestContext', {}).get('authorizer', {}).get('claims', {}).get('cognito:groups', [])
+
+        if 'admin' not in user_groups:
+            return {
+                'statusCode': 403,
+                'headers': HEADERS,
+                'body': json.dumps('Acceso denegado. Solo los administradores pueden realizar esta acción.')
+            }
+
         request_body = json.loads(event['body'])
 
         required_fields = ['titulo', 'fecha_publicacion', 'autor', 'editorial', 'status', 'descripcion', 'categoria']
@@ -102,4 +111,3 @@ def lambda_handler(event, __):
         }
     finally:
         connection.close()
-
