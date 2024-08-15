@@ -9,7 +9,7 @@ class TestApp(unittest.TestCase):
     def test_lamnda_DeleteBook(self):
         mock = {
             'body': json.dumps({
-                'user_name':'papichulo2'
+                'username':'papichulo32'
             })
         }
         __ = None
