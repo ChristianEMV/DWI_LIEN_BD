@@ -19,8 +19,8 @@ def get_secret():
         get_secret_value_response = client.get_secret_value(
             SecretId=secret_name
         )
-    except KeyError as e:
-        logging.exception('Error al acceder a la dict')
+    except ClientError as e:
+        logging.error('Error al obtener el secreto: %s', e)
         raise e
 
     secret = json.loads(get_secret_value_response['SecretString'])
@@ -35,7 +35,6 @@ HEADERS = {
 def lambda_handler(event, context):
     try:
         secret = get_secret()
-        print(secret)
         host = secret.get("host")
         user = secret.get("username")
         password = secret.get("password")
@@ -66,11 +65,11 @@ def lambda_handler(event, context):
                     }
                     books.append(book)
 
-        except Exception as e:
+        except pymysql.MySQLError as e:
             return {
                 'statusCode': 500,
                 'headers': HEADERS,
-                'body': json.dumps(f'Error al recuperar los libros: {str(e)}')
+                'body': json.dumps(f'Error al ejecutar la consulta: {str(e)}')
             }
         finally:
             connection.close()
@@ -81,6 +80,12 @@ def lambda_handler(event, context):
             'body': json.dumps(books)
         }
 
+    except ValueError as e:
+        return {
+            'statusCode': 400,
+            'headers': HEADERS,
+            'body': json.dumps(f'Error de parámetros: {str(e)}')
+        }
     except Exception as e:
         return {
             'statusCode': 500,
